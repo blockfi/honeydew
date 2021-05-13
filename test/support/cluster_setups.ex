@@ -23,9 +23,6 @@ defmodule Honeydew.Support.ClusterSetups do
 
     me = self()
 
-    # seems to be necessary to get pg2 to sync with the slaves
-    Honeydew.create_groups(queue)
-
     Node.spawn_link(node, fn ->
       function.()
       send me, :ready

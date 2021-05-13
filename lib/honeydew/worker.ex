@@ -65,9 +65,8 @@ defmodule Honeydew.Worker do
   def init([_supervisor, queue, %{ma: {module, init_args}, init_retry_secs: init_retry_secs}, queue_pid] = start_opts) do
     Process.flag(:trap_exit, true)
 
-    queue
-    |> Honeydew.group(Workers)
-    |> :pg2.join(self())
+    group = Honeydew.group(queue, Workers)
+    :ok = :pg.join(Honeydew, group, self())
 
     has_init_fcn =
       :functions

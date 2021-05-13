@@ -65,8 +65,6 @@ defmodule Honeydew.Queues do
 
     suspended = Keyword.get(opts, :suspended, false)
 
-    Honeydew.create_groups(name)
-
     module.validate_args!(args)
 
     opts = [name, module, args, dispatcher, failure_mode, success_mode, suspended]

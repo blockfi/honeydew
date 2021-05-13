@@ -12,6 +12,9 @@ defmodule Honeydew.Application do
       {Workers, []},
     ]
 
+    ## Start generic process group under the scope Honeydew.
+    {:ok, _pid} = :pg.start_link(Honeydew)
+
     opts = [strategy: :one_for_one, name: Honeydew.Supervisor]
     Supervisor.start_link(children, opts)
   end

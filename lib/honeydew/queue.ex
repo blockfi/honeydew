@@ -79,15 +79,8 @@ defmodule Honeydew.Queue do
   def init([queue, module, args, {dispatcher, dispatcher_args}, failure_mode, success_mode, suspended]) do
     Process.flag(:trap_exit, true)
 
-    :ok =
-      queue
-      |> Honeydew.group(Queues)
-      |> :pg2.create
-
-    :ok =
-      queue
-      |> Honeydew.group(Queues)
-      |> :pg2.join(self())
+    group = Honeydew.group(queue, Queues)
+    :ok = :pg.join(Honeydew, group, self())
 
     with {:global, _name} <- queue,
       do: :ok = :net_kernel.monitor_nodes(true)

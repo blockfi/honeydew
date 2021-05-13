@@ -460,24 +460,18 @@ defmodule Honeydew do
     end
   end)
 
-
-  @doc false
-  def create_groups(queue) do
-    Enum.each(@groups, fn name ->
-      queue |> group(name) |> :pg2.create
-    end)
-  end
-
   @doc false
   def delete_groups(queue) do
     Enum.each(@groups, fn name ->
-      queue |> group(name) |> :pg2.delete
+      group = queue |> group(name)
+      :pg.leave(Honeydew, group, :pg.get_members(Honeydew, group))
     end)
   end
 
   @doc false
   def get_all_members({:global, _} = queue, name) do
-    queue |> group(name) |> :pg2.get_members
+    group = group(queue, name)
+    :pg.get_members(Honeydew, group)
   end
 
   @doc false
@@ -488,7 +482,8 @@ defmodule Honeydew do
   # we need to know local members to shut down local components
   @doc false
   def get_all_local_members(queue, name) do
-    queue |> group(name) |> :pg2.get_local_members
+    group = group(queue, name)
+    :pg.get_local_members(Honeydew, group)
   end
 
 
@@ -505,16 +500,14 @@ defmodule Honeydew do
 
   @doc false
   def get_all_queues({:global, _name} = queue) do
-    queue
-    |> group(Queues)
-    |> :pg2.get_members
+    group = group(queue, Queues)
+    :pg.get_members(Honeydew, group)
   end
 
   @doc false
   def get_all_queues(queue) do
-    queue
-    |> group(Queues)
-    |> :pg2.get_local_members
+    group = group(queue, Queues)
+    :pg.get_local_members(Honeydew, group)
   end
 
   @doc false

@@ -43,8 +43,6 @@ defmodule Honeydew.Workers do
       raise ArgumentError, invalid_module_error(module)
     end
 
-    Honeydew.create_groups(name)
-
     with {:ok, _} <- Supervisor.start_child(__MODULE__, {WorkerRootSupervisor, [name, opts]}) do
       :ok
     end
